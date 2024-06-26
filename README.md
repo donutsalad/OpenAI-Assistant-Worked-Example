@@ -10,5 +10,8 @@ Vision has been implemented as an arg in the user input, an example usage would 
 
 `USER: hey! what dog breed is this? --image https://cdn.britannica.com/79/232779-050-6B0411D7/German-Shepherd-dog-Alsatian.jpg`
 
-Let me know if you want new features added, for now my plan is to implement files, vision, and a few simple tools like web scraping and local directory listing.
-I'm more than happy to implement it to make everyones experiments easier!
+File search functionality has also been implemented, an example usage would be:
+
+`USER: hey can you explain the parameters in get_weather? --file tool_calls/get_weather.json`
+
+Let me know if you want new features added, I'm more than happy to implement it to make everyones experiments easier!
