@@ -1,0 +1,16 @@
+{
+  "name": "list_directory",
+  "description": "List the files in a directory",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "directory": {
+        "type": "string",
+        "description": "The OS path to the directory to list, i.e. /home/admin/Downloads | ~/Downloads | Downloads/extracted_directory"
+      }
+    },
+    "required": [
+      "directory"
+    ]
+  }
+}

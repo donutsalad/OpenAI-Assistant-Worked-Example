@@ -3,7 +3,8 @@ import example_functions
 
 tool_list = [
   { "tool_id": "test_run", "method": example_functions.SimpleTestRun },
-  { "tool_id": "get_weather", "method": example_functions.GetWeather }
+  { "tool_id": "get_weather", "method": example_functions.GetWeather },
+  { "tool_id": "list_directory", "method": example_functions.ListDirectory }
 ]
 
 async def handle_tool_call(call):
