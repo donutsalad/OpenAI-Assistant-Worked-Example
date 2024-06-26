@@ -3,6 +3,30 @@ import asyncio
 
 import tools
 
+def parse_input(input_str):
+    parts = input_str.split()
+    text_parts = []
+    image = None
+    file = None
+    
+    i = 0
+    while i < len(parts):
+        if parts[i] == '--image':
+            if i + 1 < len(parts):
+                image = parts[i + 1]
+            i += 2
+        elif parts[i] == '--file':
+            if i + 1 < len(parts):
+                file = parts[i + 1]
+            i += 2
+        else:
+            text_parts.append(parts[i])
+            i += 1
+
+    text = ' '.join(text_parts)
+    
+    return [text, image, file]
+
 def GenerateResponce(prompt):
   return "Example Responce"
 
@@ -23,18 +47,36 @@ class OpenAIChatHandler:
     self.client.beta.threads.delete(self.run.thread_id)
     print("\n\nThread ended.")
     
-  async def GenerateResponce(self, prompt):    
+  async def GenerateResponce(self, prompt):
+    text, image, file = parse_input(prompt)
+    
+    thread_messages = []
+    contents = []
+  
+    if image is not None:
+      contents.append({"type": "text", "text": text})
+      contents.append({"type": "image_url", "image_url": {"url": image}})
+        
+      thread_messages.append(
+        {"role": "user", "content": contents}
+      )
+      
+    else:
+      thread_messages.append(
+        {"role": "user", "content": text}
+      )
+    
     if self.run is None:
       self.run = self.client.beta.threads.create_and_run(
         assistant_id = self.assistant.id,
-        thread = { "messages": [{ "role": "user", "content": prompt }]}
+        thread = { "messages": thread_messages }
       )
       
     else:
       self.run = self.client.beta.threads.runs.create(
         thread_id = self.run.thread_id,
         assistant_id = self.assistant.id,
-        additional_messages = [{ "role": "user", "content": prompt }]
+        additional_messages = thread_messages
       )
       
     response = await self.await_response()
