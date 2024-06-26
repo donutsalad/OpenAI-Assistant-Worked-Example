@@ -1,6 +1,8 @@
 import openai
 import asyncio
 
+import tools
+
 def GenerateResponce(prompt):
   return "Example Responce"
 
@@ -35,24 +37,40 @@ class OpenAIChatHandler:
         additional_messages = [{ "role": "user", "content": prompt }]
       )
       
-    responce = await self.await_responce()
-    return responce
+    response = await self.await_response()
+    return response
+  
+  async def handle_tool_call(self):
+    results = []
+    for tool in self.run.required_action.submit_tool_outputs.tool_calls:
+      result = await tools.handle_tool_call(tool)
+      results.extend(result)
       
-  async def await_responce(self):
+    self.run = self.client.beta.threads.runs.submit_tool_outputs(
+      thread_id = self.run.thread_id,
+      run_id = self.run.id,
+      tool_outputs = results
+    )
     
-    while not ((self.run.status == "completed") or (self.run.status == "requires_action")):
+    await self.await_response()
+      
+  async def await_response(self):
+    
+    while not ((self.run.status == "completed")):# or (self.run.status == "requires_action")):
         
       match self.run.status:
         case "failed":
           await self.discorduser.dm_channel.send("Please let me (the user) know what happened if you're seeing this <3 - something went wrong that I didn't expect!")
           
         case "in_progress":
-          #print("waiting for responce...")
+          #print("waiting for response...")
           await asyncio.sleep(0.35)
+      
+        case "requires_action":
+          await self.handle_tool_call()
           
       self.run = self.client.beta.threads.runs.retrieve(thread_id = self.run.thread_id, run_id = self.run.id)
-
-    
+                                                        
     match self.run.status:
       case 'completed':
         
@@ -67,6 +85,3 @@ class OpenAIChatHandler:
       
       case _:
         return "FAILED"
-      
-      
-    

@@ -12,11 +12,11 @@ async def WaitLoop(client: assistant.OpenAIChatHandler):
       print("Exiting...")
       exit()
     
-    print("\nWaiting for responce.")
-    responce = await client.GenerateResponce(prompt)
+    print("\nWaiting for response.")
+    response = await client.GenerateResponce(prompt)
     print("Responce returned.")
     
-    print(f"\n{responce}\n\n")
+    print(f"\n{response}\n\n")
     
 if __name__ == "__main__":
   toks = tokens.Keys()

@@ -1,0 +1,9 @@
+{
+  "name": "test_run",
+  "description": "A simple test function to make sure that the backend is running correctly.",
+  "parameters": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  }
+}
