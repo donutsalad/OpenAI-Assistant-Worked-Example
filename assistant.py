@@ -52,6 +52,18 @@ class OpenAIChatHandler:
     
     thread_messages = []
     contents = []
+    
+    if file is not None:
+      vector_store = self.client.beta.vector_stores.create(name="CLI Example")
+      file_streams = [open(file, "rb")]
+      file_batch = self.client.beta.vector_stores.file_batches.upload_and_poll(
+        vector_store_id = vector_store.id, files=file_streams
+      )
+      
+      self.client.beta.assistants.update(
+        assistant_id = self.asssistant_id,
+        tool_resources={"file_search": {"vector_store_ids": [vector_store.id]}},
+      )
   
     if image is not None:
       contents.append({"type": "text", "text": text})
